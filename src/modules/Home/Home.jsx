@@ -1,5 +1,4 @@
 import { useState } from "react";
-import img from "../../assets/img/logo.png";
 import Button from "react-bootstrap/Button";
 import { Detail } from "./Detail/Detail";
 import { useHomeProps } from "./useHomeProps";
@@ -50,7 +49,7 @@ export const Home = () => {
                     <td>
                       <img
                         className="category-img"
-                        src={`https://autoapi.dezinfeksiyatashkent.uz/${item.image_src}`}
+                        src={`https://autoapi.dezinfeksiyatashkent.uz/api/uploads/images/${item.image_src}`}
                         alt="Avatar"
                       />
                     </td>
@@ -81,7 +80,7 @@ export const Home = () => {
       {show && <Detail setShow={setShow} show={show} />}
       {open && (
         <CategoryUpdate setShow={setOpen} show={open} categoryId={categoryId} />
-      )}{" "}
+      )}
     </>
   );
 };

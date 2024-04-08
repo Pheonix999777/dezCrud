@@ -19,7 +19,6 @@ export const useHomeProps = () => {
         if (!response.data.success) {
           throw new Error("Network response was not ok");
         }
-        console.log(response.data.data);
         setCategory(response.data.data);
         setLoading(false);
       })

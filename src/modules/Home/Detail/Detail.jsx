@@ -3,7 +3,7 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
 
-export const Detail = ({ setShow, show }) => {
+export const Detail = ({ setShow, show, onSuccess }) => {
   const [number, setNumber] = useState("");
   const [password, setPassword] = useState("");
   const [file, setFile] = useState(null);
@@ -37,12 +37,13 @@ export const Detail = ({ setShow, show }) => {
         );
       }
 
-      window.location.reload();
+      // window.location.reload();
       setNumber("");
       setPassword("");
       setFile(null);
 
       handleClose();
+      onSuccess();
     } catch (error) {
       console.error("error:", error.message);
     }
