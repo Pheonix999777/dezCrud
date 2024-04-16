@@ -1,10 +1,10 @@
+
 import { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-
 import axios from "axios";
 
-export const CategoryUpdate = ({ show, setShow, categoryId }) => {
+export const CategoryUpdate = ({ show, setShow, categoryId, onSuccess }) => {
   const [number, setNumber] = useState("");
   const [password, setPassword] = useState("");
   const [file, setFile] = useState(null);
@@ -37,12 +37,13 @@ export const CategoryUpdate = ({ show, setShow, categoryId }) => {
           `So'rovnoma yuborish muvaffaqiyatsiz tugadi: ${response.status}`
         );
       }
-      window.location.reload();
+
       setNumber("");
       setPassword("");
       setFile(null);
 
       handleClose();
+      onSuccess();
     } catch (error) {
       console.error("error:", error.message);
     }
@@ -51,6 +52,7 @@ export const CategoryUpdate = ({ show, setShow, categoryId }) => {
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
+
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
