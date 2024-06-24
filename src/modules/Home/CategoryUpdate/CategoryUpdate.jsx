@@ -31,6 +31,12 @@ export const CategoryUpdate = ({ show, setShow, categoryId, onSuccess }) => {
         }
       );
 
+      if (!response.data.success) {
+        throw new Error(
+          `So'rovnoma yuborish muvaffaqiyatsiz tugadi: ${response.status}`
+        );
+      }
+
       setNumber("");
       setPassword("");
       setFile(null);
