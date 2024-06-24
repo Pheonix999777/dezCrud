@@ -1,9 +1,10 @@
 import { useState } from "react";
 import Button from "react-bootstrap/Button";
 import { Detail } from "./Detail/Detail";
-import { useHomeProps } from "./useHomeProps";
-import "./style.css";
 import { CategoryUpdate } from "./CategoryUpdate/CategoryUpdate";
+import "./style.css";
+import { useQuery } from "react-query";
+import axios from "axios";
 
 export const Home = () => {
   const [show, setShow] = useState(false);
@@ -15,7 +16,41 @@ export const Home = () => {
     setCategoryId(id);
   };
 
-  const { loading, category, handleDelete } = useHomeProps();
+  const {
+    isLoading,
+    error,
+    data: category,
+    refetch,
+  } = useQuery("categories", async () => {
+    const token = localStorage.getItem("token");
+    const response = await axios.get(
+      "https://autoapi.dezinfeksiyatashkent.uz/api/categories",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data.data;
+  });
+
+  const handleDelete = async (id) => {
+    const token = localStorage.getItem("token");
+    await axios.delete(
+      `https://autoapi.dezinfeksiyatashkent.uz/api/categories/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  };
+
+  const handleUpdateSuccess = () => {
+    refetch();
+  };
 
   return (
     <>
@@ -29,7 +64,8 @@ export const Home = () => {
           >
             Add+
           </Button>
-          {loading ? (
+
+          {isLoading ? (
             <p>Loading...</p>
           ) : (
             <table>
@@ -79,7 +115,12 @@ export const Home = () => {
       </div>
       {show && <Detail setShow={setShow} show={show} />}
       {open && (
-        <CategoryUpdate setShow={setOpen} show={open} categoryId={categoryId} />
+        <CategoryUpdate
+          setShow={setOpen}
+          show={open}
+          categoryId={categoryId}
+          onSuccess={handleUpdateSuccess}
+        />
       )}
     </>
   );

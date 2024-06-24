@@ -1,7 +1,8 @@
 import { BrowserRouter } from "react-router-dom";
-import { Router } from "./modules/router/Router";
-import { QueryClientProvider } from "@tanstack/react-query";
+
 import queryClient from "./modules/service/reactQuery";
+import { QueryClientProvider } from "react-query";
+import { Router } from "./modules/router/Router";
 
 function App() {
   return (

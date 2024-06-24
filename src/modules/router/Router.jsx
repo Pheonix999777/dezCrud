@@ -1,31 +1,27 @@
 import { observer } from "mobx-react-lite";
 import { Navigate, Route, Routes } from "react-router-dom";
-
-import Login from "../Auth/Login/Login";
 import { authStore } from "../store/store";
 import { Home } from "../Home/Home";
 import { useEffect } from "react";
+import Login from "../Auth/Login/Login";
 
 export const Router = observer(() => {
   const token = localStorage.getItem("token");
 
-  useEffect(() => {
-    authStore.checkAuthentication();
-  }, []);
-
-  if (token) {
-    return (
-      <Routes>
-        <Route path="/home" element={<Home />} />
-        <Route path="*" element={<Navigate to="/home" />} />
-      </Routes>
-    );
-  } else if (authStore.isAuth === false) {
-    return (
-      <Routes>
-        <Route path="/login/*" element={<Login />} />
-        <Route path="*" element={<Navigate to="/login" />} />
-      </Routes>
-    );
-  }
+  return (
+    <Routes>
+      <Route
+        path="/"
+        element={token ? <Navigate to="/home" /> : <Navigate to="/login" />}
+      />
+      <Route
+        path="/home"
+        element={token ? <Home /> : <Navigate to="/login" />}
+      />
+      <Route
+        path="/login"
+        element={!token ? <Login /> : <Navigate to="/home" />}
+      />
+    </Routes>
+  );
 });

@@ -2,24 +2,19 @@ import { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import axios from "axios";
+import { useMutation, useQueryClient } from "react-query";
 
-export const Detail = ({ setShow, show, onSuccess }) => {
+export const Detail = ({ setShow, show }) => {
   const [number, setNumber] = useState("");
   const [password, setPassword] = useState("");
   const [file, setFile] = useState(null);
   const token = localStorage.getItem("token");
+  const queryClient = useQueryClient();
 
   const handleClose = () => setShow(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const formData = new FormData();
-      formData.append("name_en", number);
-      formData.append("name_ru", password);
-      formData.append("images", file);
-
+  const mutation = useMutation(
+    async (formData) => {
       const response = await axios.post(
         "https://autoapi.dezinfeksiyatashkent.uz/api/categories",
         formData,
@@ -30,23 +25,27 @@ export const Detail = ({ setShow, show, onSuccess }) => {
           },
         }
       );
-
-      if (!response.data.success) {
-        throw new Error(
-          `So'rovnoma yuborish muvaffaqiyatsiz tugadi: ${response.status}`
-        );
-      }
-
-      // window.location.reload();
-      setNumber("");
-      setPassword("");
-      setFile(null);
-
-      handleClose();
-      onSuccess();
-    } catch (error) {
-      console.error("error:", error.message);
+      return response.data.data;
+    },
+    {
+      onSuccess: () => {
+        handleClose();
+      },
+      onError: (error) => {
+        console.error("error:", error.message);
+      },
     }
+  );
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("name_en", number);
+    formData.append("name_ru", password);
+    formData.append("images", file);
+
+    mutation.mutate(formData);
   };
 
   const handleFileChange = (e) => {
